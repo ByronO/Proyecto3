@@ -53,20 +53,3 @@ def sqlite_Connection():
     except:
         print('Error: SQLite connection')
  
-
-#Extracting data 
-def get_data_from_sql(sp, table):
-    try:
-        date1 = "2019-7-11"
-        date2 = "2019-7-18"
-        
-        con = mssql_connection()
-        cur = con.cursor()
-        cur.execute("exec {0} @table='{1}', @date1='{2}', @date2='{3}', @OUTPUT_ISSUCCESSFULL=0, @OUTPUT_STATUS=0".format(sp, table, date1, date2))
-        data_return = cur.fetchall()
-        con.commit()
-
-        return data_return
-    except IOError as e:
-        print("Error {0} Getting data from SQL Server: {1}".format(
-            e.errno, e.strerror))

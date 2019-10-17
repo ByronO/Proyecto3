@@ -36,12 +36,14 @@ def pg_load_table(file_path, table_name):
             sp, table_name))
         con.commit()
 
+        # ELIMINA DATOS MIGRADOS DE CLIENT Y SALES
         sp = '[sp_deleteData_B65186]'
         con = mssql_connection()
         cur = con.cursor()
         cur.execute("exec {0} @table='{1}'".format(sp, table_name))
         con.commit()
 
+        # INSERTA EN BITACORA CORRECTO
         conn = sqlite_Connection()
         querySQLite = """INSERT INTO migrated(tableName,file,status)  VALUES('{0}','{1}','{2}')""".format(
             table_name, file_path, "Correct")
@@ -53,6 +55,7 @@ def pg_load_table(file_path, table_name):
         os.remove(file_path)
 
     except Exception as e:
+        # INSERTA EN BITACORA FALLIDO
         conn = sqlite_Connection()
         querySQLite = """INSERT INTO migrated(tableName,file,status)  VALUES('{0}','{1}','{2}')""".format(
             table_name, file_path, "Failed")
@@ -75,7 +78,7 @@ def delete_file(file_path):
 
 
 # Execution Example
-file_path = 'sales20191016-213933.csv'
-table_name = 'sales'
+file_path = '2019-10-16_2019-10-16_emails.csv'
+table_name = 'emails'
 pg_load_table(file_path, table_name)
 delete_file(file_path)
